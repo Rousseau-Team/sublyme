@@ -20,8 +20,8 @@ else:
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('input_file', help='Path to input file containing protein sequences (.fa*) or protein embeddings (.pkl/.csv) that you wish to annotate (.pkl/.csv).')
+    parser.add_argument('models_folder', help='Path to folder containing pretrained models.')
     parser.add_argument('--only_embeddings', help='Whether to only calculate embeddings (no functional prediction).', action='store_true')
-    parser.add_argument('-f', '--models_folder', help='Path to folder containing pretrained models. Default folder is ./models/', default="./models/")
     parser.add_argument('-o', '--output_folder', help='Path to the output folder. Default folder is ./outputs/', default="./outputs/")
     args = parser.parse_args()
 

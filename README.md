@@ -23,7 +23,7 @@ git clone https://github.com/Rousseau-Team/sublyme.git
 pip install numpy pandas joblib scikit-learn torch transformers sentencepiece
 ```
 
-ex. `python sublyme/src/sublyme/sublyme.py seqs.faa sublyme/models/ --output_folder ./outputs/`
+ex. `python3 sublyme/src/sublyme/sublyme.py seqs.faa sublyme/models/ --output_folder ./outputs/`
 
 ## Advanced usage
 **Positional arguments**:

@@ -7,7 +7,7 @@ First create a virtual environment, then:
 
 **From pypi**:
 ```
-pip install numpy, pandas, transformers, sublyme
+pip install numpy pandas joblib scikit-learn torch transformers sentencepiece sublyme
 
 python
 from sublyme import sublyme
@@ -20,7 +20,7 @@ ex. `sublyme("seqs.faa", "./models/")`
 ```
 git clone https://github.com/Rousseau-Team/sublyme.git
 
-pip install numpy pandas transformers
+pip install numpy pandas joblib scikit-learn torch transformers sentencepiece
 ```
 
 ex. `python sublyme/src/sublyme/sublyme.py seqs.faa ./models/ --output_file ./outputs/`

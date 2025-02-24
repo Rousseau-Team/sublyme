@@ -23,7 +23,7 @@ git clone https://github.com/Rousseau-Team/sublyme.git
 pip install numpy pandas joblib scikit-learn torch transformers sentencepiece
 ```
 
-ex. `python sublyme/src/sublyme/sublyme.py seqs.faa ./models/ --output_file ./outputs/`
+ex. `python sublyme/src/sublyme/sublyme.py seqs.faa sublyme/models/ --output_folder ./outputs/`
 
 ## Advanced usage
 **Positional arguments**:
@@ -31,5 +31,5 @@ ex. `python sublyme/src/sublyme/sublyme.py seqs.faa ./models/ --output_file ./ou
 - **models_folder** -  Path to folder containing pretrained models (lysin_miner.pkl, endolysin_miner.pkl and val_miner.pkl).
 
 **Optional arguments**:
-- **output_file** - Path to the output folder. Default folder is ./outputs/.
+- **output_folder** - Path to the output folder. Default folder is ./outputs/.
 - **only_embeddings** - Whether to only calculate embeddings (no lysin prediction).

@@ -31,7 +31,7 @@ SUBLYME has been packaged in [PyPI](https://pypi.org/project/sublyme/) for ease 
 
 
 ### Prerequisites
-A GPU is recommended for large datasets for the embedding computation step.
+A GPU is recommended to compute embeddings for large datasets.
 
 The full list of dependencies can be found in [requirements.txt](https://github.com/Rousseau-Team/sublyme/blob/main/requirements.txt).
 
@@ -53,8 +53,8 @@ sentencepiece==0.2.0
 
 First create a virtual environment in python 3.11.5. For example:
 ```
-conda create -n empathi_env python=3.11.5
-conda activate empathi_env
+conda create -n sublyme_env python=3.11.5
+conda activate sublyme_env
 ```
 
 
@@ -86,14 +86,14 @@ Specifying the option --only_embeddings will only compute embeddings. This step 
 The embeddings file can then be reinputted using the same command (without --only_embeddings) and specifying the new file as input file.
 
 Options:
-- input_file - Path to input file containing protein sequences (.fa*) or protein embeddings (.pkl/.csv) that you wish to annotate.
+- input_file - Path to input file containing protein sequences (.fa*) or protein embeddings (.csv) that you wish to annotate.
 - models_folder - Path to folder containing pretrained models (lysin_miner.pkl, val_endo_clf.pkl).
 - --threads - Number of threads (default 1).
 - --output_folder - Path to the output folder. Default folder is ./outputs/.
 - --only_embeddings - Whether to only calculate embeddings (no lysin prediction).
 
 ### Output format
-The output consists of a csv file with a column for the final prediction and one column each for proababilities associated to lysins, endolysins and VALs. 
+The output consists of a csv file with a column for the final prediction and one column each for probabilities associated to lysins, endolysins and VALs. 
 
 Ex.
 |        Prediction         |lysin|endolysin|VAL |

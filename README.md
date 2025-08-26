@@ -1,35 +1,107 @@
-# SUBLYME: Software for Uncovering Bacteriophage LYsins in MEtagenomic datasets using protein embeddings
+<span style="font-size:2em;">**SUBLYME**</span><br>
+<span style="font-size:1.15em;">**Software for Uncovering Bacteriophage LYsins in MEtagenomic datasets**</span>
 
 
-## Installation & usage
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About the Project</a>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage details</a></li>
+  </ol>
+</details>
 
-First create a virtual environment, then: 
+## About the Project
+
+SUBLYME is a tool to identify bacteriophage lysins. It utilizes the highly informative ProtT5
+protein embeddings to make predictions and was trained using proteins in the [PHALP](https://phalp.ugent.be/) database.
+
+
+## Getting started
+SUBLYME has been packaged in [PyPI](https://pypi.org/project/sublyme/) for ease of use. The source code can be downloaded from [GitHub](https://github.com/Rousseau-Team/sublyme).
+
+
+### Prerequisites
+A GPU is recommended for large datasets for the embedding computation step.
+
+The full list of dependencies can be found in [requirements.txt](https://github.com/Rousseau-Team/sublyme/blob/main/requirements.txt).
+
+Dependencies are taken care of by pip.
+```
+python/3.11.5
+joblib==1.2.0
+numpy==1.26.4
+pandas==2.2.1
+torch==2.3.0
+scipy==1.13.1
+scikit-learn==1.3.0
+transformers==4.43.1
+sentencepiece==0.2.0
+```
+
+
+### Installation
+
+First create a virtual environment in python 3.11.5. For example:
+```
+conda create -n empathi_env python=3.11.5
+conda activate empathi_env
+```
+
 
 **From pypi**:
 ```
-pip install numpy pandas joblib scikit-learn torch transformers sentencepiece sublyme
-
-python
-from sublyme import sublyme
+pip install sublyme
 ```
 
-ex. `sublyme("seqs.faa", "./models/")`
+Usage
+```
+sublyme test/input.faa models -t 4
+```
 
 
 **From source**:
 ```
 git clone https://github.com/Rousseau-Team/sublyme.git
-
-pip install numpy pandas joblib scikit-learn torch transformers sentencepiece
+cd sublyme
+pip install -e requirements.txt
 ```
 
-ex. `python3 sublyme/src/sublyme/sublyme.py seqs.faa sublyme/models/ --output_folder ./outputs/`
+ex. `python3 src/sublyme/sublyme.py test/input.faa models -t 4`
 
-## Advanced usage
-**Positional arguments**:
-- **input_file** - Path to input file containing protein sequences (.fa*) or protein embeddings (.pkl/.csv) that you wish to annotate (.pkl/.csv).
-- **models_folder** -  Path to folder containing pretrained models (lysin_miner.pkl, endolysin_miner.pkl and val_miner.pkl).
 
-**Optional arguments**:
-- **output_folder** - Path to the output folder. Default folder is ./outputs/.
-- **only_embeddings** - Whether to only calculate embeddings (no lysin prediction).
+### Usage details
+A fasta file of protein sequences or a csv file of protein embeddings can be used as input.
+
+Specifying the option --only_embeddings will only compute embeddings. This step is much faster with a GPU.
+The embeddings file can then be reinputted using the same command (without --only_embeddings) and specifying the new file as input file.
+
+Options:
+- input_file - Path to input file containing protein sequences (.fa*) or protein embeddings (.pkl/.csv) that you wish to annotate.
+- models_folder - Path to folder containing pretrained models (lysin_miner.pkl, val_endo_clf.pkl).
+- --threads - Number of threads (default 1).
+- --output_folder - Path to the output folder. Default folder is ./outputs/.
+- --only_embeddings - Whether to only calculate embeddings (no lysin prediction).
+
+### Output format
+The output consists of a csv file with a column for the final prediction and one column each for proababilities associated to lysins, endolysins and VALs. 
+
+Ex.
+|        Prediction         |lysin|endolysin|VAL |
+|---------------------------|-----|---------|----|
+|      lysin\|endolysin     |0.98 |0.95     |0.05|
+|             Na            |0.01 |Na       |Na  |
+
+Note that the endolysin/VAL classifier is one multiclass classifier, implying that their probabilities will always add up to one and that the classifier will always assign at least one of these to be true.
+
+Also, the endolysin/VAL classifier is only applied to proteins first predicted as being lysins (lysin proba >0.5).
+

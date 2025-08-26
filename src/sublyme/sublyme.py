@@ -5,10 +5,12 @@ import time
 import pickle
 import joblib
 import argparse
+import itertools
 import numpy as np
 import pandas as pd
 from pathlib import Path
 from sklearn.svm import SVC
+from multiprocessing.dummy import Pool as ThreadPool
 
 if __package__ is None or __package__ == '':
     from embeddings import *
@@ -23,6 +25,7 @@ def parse_args():
     parser.add_argument('models_folder', help='Path to folder containing pretrained models.')
     parser.add_argument('--only_embeddings', help='Whether to only calculate embeddings (no functional prediction).', action='store_true')
     parser.add_argument('-o', '--output_folder', help='Path to the output folder. Default folder is ./outputs/', default="./outputs/")
+    parser.add_argument('-t', '--threads', type=int, help='Number of threads. Default 1.', default=1)
     args = parser.parse_args()
 
 
@@ -30,27 +33,46 @@ def parse_args():
     models_folder = args.models_folder
     only_embeddings = args.only_embeddings
     output_folder = args.output_folder
+    threads = args.threads
 
-    return input_file, models_folder, only_embeddings, output_folder
+    return input_file, models_folder, only_embeddings, output_folder, threads
 
 
 # Load dataset we want to make predictions for
-def load_dataset(input_file):
+def load_dataset(input_file, threads):
 
     print("Loading dataset...")
 
-    if input_file.endswith(".pkl"):
-        test = pd.read_pickle(input_file)
+    X_tests = []
 
-    if input_file.endswith(".csv"):
-        test = pd.read_csv(input_file, index_col=0)
-        test.columns = test.columns.astype(int)
+    if threads ==1:
+        if input_file.endswith(".pkl"):
+            test = pd.read_pickle(input_file)
 
-    X_test = test.loc[:, 0:1023]
+        if input_file.endswith(".csv"):
+            test = pd.read_csv(input_file, index_col=0)
+            test.columns = test.columns.astype(int)
+
+        X_tests.append(test.loc[:, 0:1023])
+
+    else:
+        if input_file.endswith(".pkl"):
+            test = pd.read_pickle(input_file)
+            X_tests.append(test.loc[:, 0:1023])
+
+        if input_file.endswith(".csv"):
+            f = np.memmap(input_file)
+            file_lines = sum(np.sum(f[i:i+(1024*1024)] == ord('\n')) for i in range(0, len(f), 1024*1024))
+            chunk_size = (file_lines // threads) + 1
+
+            for chunk in pd.read_csv(input_file, index_col=0, chunksize=chunk_size):
+                chunk.columns = chunk.columns.astype(int)
+                chunk = chunk.loc[:, 0:1023]
+                X_tests.append(chunk)
 
     print("Done loading dataset.")
 
-    return X_test
+    return X_tests
 
 
 def calc_embeddings(input_file, output_folder):
@@ -90,13 +112,27 @@ def save_preds(preds, output_folder): #name
 
     print("Saving predictions to file...")
 
-    preds.to_csv(os.path.join(output_folder, f"predictions_sublyme.csv")) #name,
+    preds[0].to_csv(os.path.join(output_folder, f"predictions_sublyme.csv"))
+    for pred in preds[1:]:
+        pred.to_csv(os.path.join(output_folder, f"predictions_sublyme.csv"), mode="a", header=False)
 
     print("Done saving predictions to file.")
 
+def launch_per_thread(X_test, models_folder):
+
+    #Remove entries with duplicate names
+    if X_test.index.duplicated().sum() > 0:
+        print(X_test.index.duplicated().sum(), "sequences with duplicate names were removed. Make sure this is normal as you may have lost some sequences. Here is the list of problematic IDs:", X_test[X_test.index.duplicated()].index)
+    X_test = X_test.loc[~X_test.index.duplicated()]
+
+    #Make predictions
+    preds = predict(X_test, models_folder)
+
+    return preds
+
 
 #Main function. Loads dataset and makes predictions.
-def lysin_miner(input_file, models_folder="models", only_embeddings=False, output_folder="outputs"):
+def lysin_miner(input_file, models_folder="models", only_embeddings=False, output_folder="outputs", threads=1):
 
     #Create output folder
     if not os.path.exists(os.path.join(output_folder)):
@@ -108,26 +144,27 @@ def lysin_miner(input_file, models_folder="models", only_embeddings=False, outpu
         if only_embeddings:
             return None #stop before making predictions
         fname = f"{os.path.split(input_file)[1].rsplit('.', 1)[0]}.csv"
-        X_test = load_dataset(os.path.join(output_folder, fname))
+        X_tests = load_dataset(os.path.join(output_folder, fname), threads)
 
     elif input_file.endswith((".pkl", ".csv")): #input are protein embeddings
-        X_test = load_dataset(input_file)
+        X_tests = load_dataset(input_file, threads)
 
     else:
         print("Input file provided does not have an accepted extension (.pkl, .csv, .fa, .faa, .fasta).")
 
-    #Remove entries with duplicate names
-    if X_test.index.duplicated().sum() > 0:
-        print(X_test.index.duplicated().sum(), "sequences with duplicate names were removed. Make sure this is normal as you may have lost some sequences. Here is the list of problematic IDs:", X_test[X_test.index.duplicated()].index)
-    X_test = X_test.loc[~X_test.index.duplicated()]
+    pool = ThreadPool(threads)
+    results = pool.starmap(launch_per_thread, zip(X_tests, itertools.repeat(models_folder, len(X_tests)) ))
 
-    #Make predictions
-    preds = predict(X_test, models_folder)
+    save_preds(results, output_folder)
 
-    save_preds(preds, output_folder)
 
+def main():
+    #Load user args
+    input_file, models_folder, only_embeddings, output_folder, threads = parse_args()
+    lysin_miner(input_file, models_folder, only_embeddings, output_folder, threads)
 
 if __name__ == '__main__':
+    main()
     #Load user args
-    input_file, models_folder, only_embeddings, output_folder = parse_args()
-    lysin_miner(input_file, models_folder, only_embeddings, output_folder)
+    #input_file, models_folder, only_embeddings, output_folder, threads = parse_args()
+    #lysin_miner(input_file, models_folder, only_embeddings, output_folder, threads)

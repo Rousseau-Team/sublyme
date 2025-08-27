@@ -93,28 +93,40 @@ def calc_embeddings(input_file, output_folder):
 
 def predict(data, models_folder):
     data = data.loc[:, 0:1023]
+
+    #load classifiers
     clf1 = joblib.load(os.path.join(models_folder, "lysin_miner.pkl"))
     clf2 = joblib.load(os.path.join(models_folder, "val_endo_clf.pkl"))
 
+    #make predictions clf1
     preds = pd.DataFrame(data=clf1.predict_proba(data)[:,1], columns=["lysin"], index=data.index)
     lysins = preds.loc[preds["lysin"] > 0.5, :].index
     non_lysins = preds.loc[preds["lysin"] <= 0.5, :].index
 
-    if len(lysins) > 0:
+    preds["endolysin"] = None; preds["val"] = None; preds["pred"] = None
+    if len(lysins) > 0: #select only prots predicted as lysins
+        # make preds clf2 and merge with clf1 preds
         preds2 = pd.DataFrame(data=clf2.predict_proba(data.loc[lysins]), columns=clf2.classes_, index=lysins)
-        return pd.merge(preds, preds2, left_index=True, right_index=True, how="outer").fillna(0)
+        preds = preds.combine_first(preds2)
 
-    return preds
+        # format output
+        assign = pd.DataFrame(columns=preds.columns, index=preds.index)
+        for i in assign.columns: #assign final prediction per row
+            assign[i] = np.where(preds[i] > 0.5, i, "")
+        preds["pred"] = assign["lysin"] + "|" + assign["endolysin"] + "|" + assign["val"]
+        preds["pred"] = preds["pred"].str.replace(" ","").str.strip("|")
+
+    return preds.loc[:, ["pred", "lysin", "endolysin", "val"]]
 
 
 # Save predictions
-def save_preds(preds, output_folder): #name
+def save_preds(preds, output_folder):
 
     print("Saving predictions to file...")
 
-    preds[0].to_csv(os.path.join(output_folder, f"predictions_sublyme.csv"))
+    preds[0].to_csv(os.path.join(output_folder, f"sublyme_predictions.csv"))
     for pred in preds[1:]:
-        pred.to_csv(os.path.join(output_folder, f"predictions_sublyme.csv"), mode="a", header=False)
+        pred.to_csv(os.path.join(output_folder, f"sublyme_predictions.csv"), mode="a", header=False)
 
     print("Done saving predictions to file.")
 

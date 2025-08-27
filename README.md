@@ -88,9 +88,9 @@ The embeddings file can then be reinputted using the same command (without --onl
 
 Options:
 - input_file - Path to input file containing protein sequences (.fa*) or protein embeddings (.csv) that you wish to annotate.
-- models_folder - Path to folder containing pretrained models (lysin_miner.pkl, val_endo_clf.pkl).
-- --threads - Number of threads (default 1).
-- --output_folder - Path to the output folder. Default folder is ./outputs/.
+- -t --threads - Number of threads (default 1).
+- -o --output_folder - Path to the output folder. Default folder is ./outputs/.
+- -m --models_folder - Path to folder containing pretrained models (lysin_miner.pkl, val_endo_clf.pkl). Default is src/sublyme/models.
 - --only_embeddings - Whether to only calculate embeddings (no lysin prediction).
 
 ### Output format

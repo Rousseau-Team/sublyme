@@ -14,15 +14,19 @@ from multiprocessing.dummy import Pool as ThreadPool
 
 if __package__ is None or __package__ == '':
     from embeddings import *
+    preloaded_models=False
 else:
     from .embeddings import *
-
+    from importlib import resources
+    clf1_path = str(resources.files('sublyme.models').joinpath('lysin_miner.pkl'))
+    clf2_path = str(resources.files('sublyme.models').joinpath('val_endo_clf.pkl'))
+    preloaded_models=True
 
 # Parse arguments
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('input_file', help='Path to input file containing protein sequences (.fa*) or protein embeddings (.pkl/.csv) that you wish to annotate (.pkl/.csv).')
-    parser.add_argument('models_folder', help='Path to folder containing pretrained models.')
+    parser.add_argument('--models_folder', help='Path to folder containing pretrained models.', default="./models")
     parser.add_argument('--only_embeddings', help='Whether to only calculate embeddings (no functional prediction).', action='store_true')
     parser.add_argument('-o', '--output_folder', help='Path to the output folder. Default folder is ./outputs/', default="./outputs/")
     parser.add_argument('-t', '--threads', type=int, help='Number of threads. Default 1.', default=1)
@@ -95,8 +99,12 @@ def predict(data, models_folder):
     data = data.loc[:, 0:1023]
 
     #load classifiers
-    clf1 = joblib.load(os.path.join(models_folder, "lysin_miner.pkl"))
-    clf2 = joblib.load(os.path.join(models_folder, "val_endo_clf.pkl"))
+    if preloaded_models==False:
+        clf1 = joblib.load(os.path.join(models_folder, "lysin_miner.pkl"))
+        clf2 = joblib.load(os.path.join(models_folder, "val_endo_clf.pkl"))
+    else:
+        clf1 = joblib.load(clf1_path)
+        clf2 = joblib.load(clf2_path)
 
     #make predictions clf1
     preds = pd.DataFrame(data=clf1.predict_proba(data)[:,1], columns=["lysin"], index=data.index)

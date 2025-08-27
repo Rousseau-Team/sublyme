@@ -8,6 +8,7 @@ packages = ["src/sublyme"]
 [tool.hatch.build.targets.sdist]
 exclude = ["notebooks/*"]
 
+
 [project]
 name = "sublyme"
 version = "0.0.0"

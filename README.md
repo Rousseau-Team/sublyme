@@ -1,5 +1,5 @@
 <h1 align="center">SUBLYME</h1>
-<div align="center">**Software for Uncovering Bacteriophage LYsins in MEtagenomic datasets**</div>
+<div align="center"> **Software for Uncovering Bacteriophage LYsins in MEtagenomic datasets** </div>
 
 
 <!-- TABLE OF CONTENTS -->
@@ -16,8 +16,8 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage details</a></li>
-    <li><a href="#output">Output format</a></li>
+    <li><a href="#usage-details">Usage details</a></li>
+    <li><a href="#output-format">Output format</a></li>
   </ol>
 </details>
 

@@ -1,5 +1,5 @@
-<p style="text-align: center;"># SUBLYME
-**Software for Uncovering Bacteriophage LYsins in MEtagenomic datasets**</p>
+<h1 align="center">SUBLYME</h1>
+<div align="center">**Software for Uncovering Bacteriophage LYsins in MEtagenomic datasets**</div>
 
 
 <!-- TABLE OF CONTENTS -->

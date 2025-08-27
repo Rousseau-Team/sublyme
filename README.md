@@ -96,12 +96,12 @@ Options:
 The output consists of a csv file with a column for the final prediction and one column each for probabilities associated to lysins, endolysins and VALs. 
 
 Ex.
-|        Prediction         |lysin|endolysin|VAL |
+|            pred           |lysin|endolysin|VAL |
 |---------------------------|-----|---------|----|
 |      lysin\|endolysin     |0.98 |0.95     |0.05|
 |             Na            |0.01 |Na       |Na  |
 
-Note that the endolysin/VAL classifier is one multiclass classifier, implying that their probabilities will always add up to one and that the classifier will always assign at least one of these to be true.
+Note that the endolysin/VAL classifier is one multiclass classifier, implying that their probabilities will always add up to one and that the classifier will always assign one of these to be true.
 
 Also, the endolysin/VAL classifier is only applied to proteins first predicted as being lysins (lysin proba >0.5).
 

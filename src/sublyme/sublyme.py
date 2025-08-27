@@ -25,9 +25,9 @@ else:
 # Parse arguments
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('input_file', help='Path to input file containing protein sequences (.fa*) or protein embeddings (.pkl/.csv) that you wish to annotate (.pkl/.csv).')
-    parser.add_argument('-o', '--output_folder', help='Path to the output folder. Default folder is ./outputs/', default="./outputs/")
-    parser.add_argument('-m', '--models_folder', help='Path to folder containing pretrained models.', default="./src/sublyme/models")
+    parser.add_argument('input_file', help='Path to input file containing protein sequences (.fa*) or protein embeddings (.csv) that you wish to annotate.')
+    parser.add_argument('-o', '--output_folder', help='Path to the output folder. Default folder is ./outputs.', default="./outputs/")
+    parser.add_argument('-m', '--models_folder', help='Path to folder containing pretrained models. Default is src/sublme/models.', default="./src/sublyme/models")
     parser.add_argument('-t', '--threads', type=int, help='Number of threads. Default 1.', default=1)
     parser.add_argument('--only_embeddings', help='Whether to only calculate embeddings (no functional prediction).', action='store_true')
     args = parser.parse_args()

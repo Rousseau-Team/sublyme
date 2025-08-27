@@ -66,7 +66,7 @@ pip install sublyme
 
 Usage
 ```
-sublyme test/input.faa models -t 4
+sublyme test/input.faa -t 4
 ```
 
 
@@ -77,7 +77,7 @@ cd sublyme
 pip install -e requirements.txt
 ```
 
-ex. `python3 src/sublyme/sublyme.py test/input.faa models -t 4`
+ex. `python3 src/sublyme/sublyme.py test/input.faa -t 4 --models_folder src/sublyme/models`
 
 
 ### Usage details

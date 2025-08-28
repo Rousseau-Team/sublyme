@@ -74,7 +74,7 @@ sublyme test/input.faa -t 4
 ```
 git clone https://github.com/Rousseau-Team/sublyme.git
 cd sublyme
-pip install -e requirements.txt
+pip install -r requirements.txt
 ```
 
 ex. `python3 src/sublyme/sublyme.py test/input.faa -t 4 --models_folder src/sublyme/models`

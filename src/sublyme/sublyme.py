@@ -122,7 +122,7 @@ def predict(data, models_folder):
         for i in assign.columns: #assign final prediction per row
             assign[i] = np.where(preds[i] > 0.5, i, "")
         preds["pred"] = assign["lysin"] + "|" + assign["endolysin"] + "|" + assign["val"]
-        preds["pred"] = preds["pred"].str.replace(" ","").str.strip("|")
+        preds["pred"] = preds["pred"].str.replace(" ","").str.strip("|").str.replace("||","|")
 
     return preds.loc[:, ["pred", "lysin", "endolysin", "val"]]
 

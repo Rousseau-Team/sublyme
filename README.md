@@ -69,6 +69,29 @@ Usage
 sublyme test/input.faa -t 4
 ```
 
+**From apptainer**:
+Download [Apptainer](https://apptainer.org/docs/admin/main/installation.html) or singularity. On windows, this will require a virtual machine.
+[WSL](https://learn.microsoft.com/en-us/windows/wsl/install) works well.
+
+Fetch SUBLYME from  [Sylabs](https://cloud.sylabs.io/library/alexandre_boulay/sublyme/sublyme):
+```
+apptainer pull sublyme.sif library://alexandre_boulay/sublyme/sublyme
+```
+
+Usage
+```
+apptainer run sublyme.sif test/input.fa path/to/output_folder [protein|genome] nb_threads
+```
+
+The apptainer image accepts either protein or genomic sequences. 
+If genomes are used as input, Prodigal will be run to determine coding sequences. 
+Proteins will be dereplicated using mmseqs and lysins will be predicted within the resulting set of proteins.
+
+The script outputs 2-4 files: 
+ - genes.fna: genes predicted by Prodigal.
+ - proteins.faa: proteins predicted by Prodigal.
+ - proteins.csv: protein embeddings computed using ProtT5.
+ - sublyme_predictions.csv: predictions obtained from sublyme.
 
 **From source**:
 ```

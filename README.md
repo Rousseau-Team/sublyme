@@ -38,7 +38,7 @@ The full list of dependencies can be found in [requirements.txt](https://github.
 
 Dependencies are taken care of by pip.
 ```
-python/3.11.5
+python==3.11.5
 joblib==1.2.0
 numpy==1.26.4
 pandas==2.2.1
@@ -69,6 +69,8 @@ Usage
 sublyme test/input.faa -t 4
 ```
 
+SUBLYME accepts as input a multifasta file of protein sequences or a csv file of ProtT5 embeddings.
+
 **From apptainer**:
 
 Download [Apptainer](https://apptainer.org/docs/admin/main/installation.html) or singularity. On windows, this will require a virtual machine.
@@ -84,10 +86,10 @@ Usage
 apptainer run sublyme.sif test/input.fa path/to/output_folder {protein|genome} nb_threads [--no-dedup]
 ```
 
-The apptainer image accepts either protein or genomic sequences. 
+The apptainer image accepts either protein or genomic sequences as input. 
 If genomes are used as input, Prodigal will be run to determine coding sequences.
 Proteins will be deduplicated using MMseqs unless specified otherwise (--no-dedup) and lysins will be predicted within the resulting set of proteins.
-Arguments must be specified in the order they appear above.
+Arguments must be specified in the order they appear above, only --no-dedup is optional.
 
 The script outputs 2-4 files: 
  - genes.fna: genes predicted by Prodigal.
@@ -104,6 +106,7 @@ pip install -r requirements.txt
 
 ex. `python3 src/sublyme/sublyme.py test/input.faa -t 4 --models_folder src/sublyme/models`
 
+SUBLYME accepts as input a multifasta file of protein sequences or a csv file of protein embeddings.
 
 ### Usage details
 A fasta file of protein sequences or a csv file of protein embeddings can be used as input.
@@ -122,10 +125,10 @@ Options:
 The output consists of a csv file with a column for the final prediction and one column each for probabilities associated to lysins, endolysins and VALs. 
 
 Ex.
-|            pred           |lysin|endolysin|VAL |
-|---------------------------|-----|---------|----|
-|      lysin\|endolysin     |0.98 |0.95     |0.05|
-|             Na            |0.01 |Na       |Na  |
+|      |            pred           |lysin|endolysin|VAL |
+|------|---------------------------|-----|---------|----|
+|Prot 1|      lysin\|endolysin     |0.98 |0.95     |0.05|
+|Prot 2|             Na            |0.01 |Na       |Na  |
 
 Note that the endolysin/VAL classifier is one multiclass classifier, implying that their probabilities will always add up to one and that the classifier will always assign one of these to be true.
 

@@ -73,6 +73,9 @@ SUBLYME accepts as input a multifasta file of protein sequences or a csv file of
 
 **From apptainer**:
 
+Although a little larger (5.8G), the Apptainer container accepts genomic sequences (or protein sequences as well).
+This allows for a pipeline that launches Prodigal to extract gene and protein sequences, and launches SUBLYME to predict lysins.
+
 Download [Apptainer](https://apptainer.org/docs/admin/main/installation.html) or singularity. On windows, this will require a virtual machine.
 [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) works well.
 
@@ -86,16 +89,19 @@ Usage
 apptainer run sublyme.sif test/input.fa path/to/output_folder {protein|genome} nb_threads [--no-dedup]
 ```
 
-The apptainer image accepts either protein or genomic sequences as input. 
-If genomes are used as input, Prodigal will be run to determine coding sequences.
-Proteins will be deduplicated using MMseqs unless specified otherwise (--no-dedup) and lysins will be predicted within the resulting set of proteins.
 Arguments must be specified in the order they appear above, only --no-dedup is optional.
+The apptainer image accepts either protein or genomic sequences as input. You must specify which.
+Make sure to specify --no-dedup if you do not want to remove duplicate sequences.
 
-The script outputs 2-4 files: 
- - genes.fna: genes predicted by Prodigal.
- - proteins.faa: proteins predicted by Prodigal.
+The script always outputs:
  - proteins.csv: protein embeddings computed using ProtT5.
  - sublyme_predictions.csv: predictions obtained from sublyme.
+ - sublyme_lysins.faa: protein sequences of predicted lysins.
+
+And if genomic sequences were used as input:
+ - genes.gff: protein genomic information from Prodigal (position of genes in genome).
+ - proteins.faa: all protein sequences predicted by Prodigal.
+ - sublyme_lysin_genes.fna: gene sequences for predicted lysins.
 
 **From source**:
 ```

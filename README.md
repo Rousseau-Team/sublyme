@@ -18,13 +18,16 @@
     </li>
     <li><a href="#usage-details">Usage details</a></li>
     <li><a href="#output-format">Output format</a></li>
+    <li><a href="#output-format">Citation</a></li>
   </ol>
 </details>
 
 ## About the Project
 
 SUBLYME is a tool to identify bacteriophage lysins. It utilizes the highly informative ProtT5
-protein embeddings to make predictions and was trained using proteins in the [PHALP](https://phalp.ugent.be/) database.
+protein embeddings to make predictions and was trained using the UniProt-derived proteins found in [PHALP 1.0](https://www.mdpi.com/1999-4915/13/7/1240).
+
+SUBLYME was then applied to [EnVhogDB](https://peercommunityjournal.org/articles/10.24072/pcjournal.627/) to create [PhaLP 2.0](https://phalp.ugent.be/), a metagenomic extension of the previous database.
 
 
 ## Getting started
@@ -139,4 +142,7 @@ Ex.
 Note that the endolysin/VAL classifier is one multiclass classifier, implying that their probabilities will always add up to one and that the classifier will always assign one of these to be true.
 
 Also, the endolysin/VAL classifier is only applied to proteins first predicted as being lysins (lysin proba >0.5).
+
+### Citation
+Boulay, A. et al. PhaLP 2.0: extending the community-oriented phage lysin database with a SUBLYME pipeline for metagenomic discovery. 2025.12.08.692814 Preprint at https://doi.org/10.64898/2025.12.08.692814 (2025).
 

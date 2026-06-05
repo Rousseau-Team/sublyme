@@ -144,5 +144,4 @@ Note that the endolysin/VAL classifier is one multiclass classifier, implying th
 Also, the endolysin/VAL classifier is only applied to proteins first predicted as being lysins (lysin proba >0.5).
 
 ### Citation
-Boulay, A. et al. PhaLP 2.0: extending the community-oriented phage lysin database with a SUBLYME pipeline for metagenomic discovery. 2025.12.08.692814 Preprint at https://doi.org/10.64898/2025.12.08.692814 (2025).
-
+Alexandre Boulay, Victor Németh, Bjorn Criel, Michiel Stock, Bernard De Baets, Clovis Galiez, Elsa Rousseau, Yves Briers, Roberto Vázquez, PhaLP 2.0: extending the community-oriented phage lysin database with a SUBLYME pipeline for metagenomic discovery, Database, Volume 2026, 2026, baag033, [https://doi.org/10.1093/database/baag033](https://doi.org/10.1093/database/baag033)

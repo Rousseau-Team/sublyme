@@ -18,16 +18,13 @@
     </li>
     <li><a href="#usage-details">Usage details</a></li>
     <li><a href="#output-format">Output format</a></li>
-    <li><a href="#output-format">Citation</a></li>
   </ol>
 </details>
 
 ## About the Project
 
 SUBLYME is a tool to identify bacteriophage lysins. It utilizes the highly informative ProtT5
-protein embeddings to make predictions and was trained using the UniProt-derived proteins found in [PHALP 1.0](https://www.mdpi.com/1999-4915/13/7/1240).
-
-SUBLYME was then applied to [EnVhogDB](https://peercommunityjournal.org/articles/10.24072/pcjournal.627/) to create [PhaLP 2.0](https://phalp.ugent.be/), a metagenomic extension of the previous database.
+protein embeddings to make predictions and was trained using proteins in the [PHALP](https://phalp.ugent.be/) database.
 
 
 ## Getting started
@@ -76,15 +73,12 @@ SUBLYME accepts as input a multifasta file of protein sequences or a csv file of
 
 **From apptainer**:
 
-Although a little larger (5.8G), the Apptainer container accepts genomic sequences (or protein sequences as well).
-This allows for a pipeline that launches Prodigal to extract gene and protein sequences, and launches SUBLYME to predict lysins.
-
 Download [Apptainer](https://apptainer.org/docs/admin/main/installation.html) or singularity. On windows, this will require a virtual machine.
 [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) works well.
 
-Fetch SUBLYME from  [Sylabs](https://cloud.sylabs.io/library/alexandre_boulay/sublyme/sublyme):
+Fetch SUBLYME from the [GHCR](https://github.com/Rousseau-Team/sublyme/pkgs/container/sublyme):
 ```
-apptainer pull sublyme.sif library://alexandre_boulay/sublyme/sublyme
+apptainer pull sublyme.sif oras://ghcr.io/rousseau-team/sublyme:1.2
 ```
 
 Usage
@@ -92,19 +86,16 @@ Usage
 apptainer run sublyme.sif test/input.fa path/to/output_folder {protein|genome} nb_threads [--no-dedup]
 ```
 
+The apptainer image accepts either protein or genomic sequences as input. 
+If genomes are used as input, Prodigal will be run to determine coding sequences.
+Proteins will be deduplicated using MMseqs unless specified otherwise (--no-dedup) and lysins will be predicted within the resulting set of proteins.
 Arguments must be specified in the order they appear above, only --no-dedup is optional.
-The apptainer image accepts either protein or genomic sequences as input. You must specify which.
-Make sure to specify --no-dedup if you do not want to remove duplicate sequences.
 
-The script always outputs:
+The script outputs 2-4 files: 
+ - genes.fna: genes predicted by Prodigal.
+ - proteins.faa: proteins predicted by Prodigal.
  - proteins.csv: protein embeddings computed using ProtT5.
  - sublyme_predictions.csv: predictions obtained from sublyme.
- - sublyme_lysins.faa: protein sequences of predicted lysins.
-
-And if genomic sequences were used as input:
- - genes.gff: protein genomic information from Prodigal (position of genes in genome).
- - proteins.faa: all protein sequences predicted by Prodigal.
- - sublyme_lysin_genes.fna: gene sequences for predicted lysins.
 
 **From source**:
 ```
@@ -143,5 +134,3 @@ Note that the endolysin/VAL classifier is one multiclass classifier, implying th
 
 Also, the endolysin/VAL classifier is only applied to proteins first predicted as being lysins (lysin proba >0.5).
 
-### Citation
-Alexandre Boulay, Victor Németh, Bjorn Criel, Michiel Stock, Bernard De Baets, Clovis Galiez, Elsa Rousseau, Yves Briers, Roberto Vázquez, PhaLP 2.0: extending the community-oriented phage lysin database with a SUBLYME pipeline for metagenomic discovery, Database, Volume 2026, 2026, baag033, [https://doi.org/10.1093/database/baag033](https://doi.org/10.1093/database/baag033)
